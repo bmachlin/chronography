@@ -1,0 +1,22 @@
+{
+  "name": "chronography",
+  "version": "1.0.0",
+  "description": "Git for a Spotify powered artist visualization tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmachlin/chronography.git"
+  },
+  "author": "Ben Machlin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bmachlin/chronography/issues"
+  },
+  "homepage": "https://github.com/bmachlin/chronography#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
