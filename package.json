@@ -1,10 +1,13 @@
 {
   "name": "chronography",
   "version": "1.0.0",
-  "description": "Git for a Spotify powered artist visualization tool",
+  "description": "Spotify powered artist visualization tool",
   "main": "index.js",
+  "engines": {
+    "node": "latest"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
