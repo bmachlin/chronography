@@ -80,6 +80,18 @@ function processAlbum(id) {
 
 function processTrack(trackFeatures) {
 	var name = trackFeatures.name;
+	var featIndex = name.indexOf("feat.");
+	if(featIndex == -1)
+		featIndex = name.indexOf("Feat.");
+	if(featIndex != -1) {
+		var prevChar = name.substring(featIndex-1, featIndex);
+		if(prevChar != " ") {
+			name = name.substring(0, featIndex-1);
+		} else {
+			name = name.substring(0, featIndex);
+		}
+	}
+
 
 	chartData['danceability']['series'][0][trackFeatures.track_number] = trackFeatures.danceability;
 	chartData['danceability']['labels'][trackFeatures.track_number] = name;
@@ -187,7 +199,7 @@ function updateChart() {
 
 	var chartSetter2 = {
 		labels: [],
-		series: []
+		series: [[],[]]
 	};
 
 	// if(snone || snone2) {
@@ -215,6 +227,7 @@ function updateChart() {
 	// }
 
 	if(snone) {
+		$("#result-chart").show();
 		chartSetter['labels'] = chartData[selected]['labels'];
 		chartSetter['series'][0] = chartData[selected]['series'][0];
 		new Chartist.Line('#result-chart', chartSetter, options);
@@ -223,11 +236,12 @@ function updateChart() {
 	}
 	
 	if(snone2) {
+		$("#result-chart2").show();
 		chartSetter2['labels'] = chartData[selected]['labels'];
-		chartSetter2['series'][0] = chartData[selected2]['series'][0];
+		chartSetter2['series'][1] = chartData[selected2]['series'][0];
 		new Chartist.Line('#result-chart2', chartSetter2, options2);
 	} else {
-		new Chartist.Line('#result-chart2', null);	
+		$("#result-chart2").hide();
 	}
 
 }
