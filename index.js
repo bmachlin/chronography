@@ -3,10 +3,9 @@ var app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
-app.get("/", function(req, res) {
-	res.send("heyo");
-});
-
+app.use(express.static(__dirname + '/src'));
+app.use('/lib', express.static(__dirname + '/lib'));
+app.use('/res', express.static(__dirname + '/res'));
 
 
 

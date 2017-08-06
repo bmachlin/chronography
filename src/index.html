@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Spotify Tools</title> <!--Needs better title-->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        
+        <script src="lib/underscore-min.js"></script>
+        <script src="lib/sc.js"></script>
+
+
+        <!-- CSS -->
+
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+        <!--custom/override styles-->
+        <link rel="stylesheet" href="lib/bower_components/chartist/dist/chartist.min.css">
+        <link rel="stylesheet" href="stylesheet.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="avgs.css" media="screen" title="no title" charset="utf-8">
+    </head>
+
+    <body>
+        <script src="lib/bower_components/chartist/dist/chartist.min.js"></script>
+        <!-- navigation bar  -->
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="avgs.html">
+                    <span id="header-title">Spotify Toolbox</span></a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul id="options" class="nav navbar-nav navbar-right">
+                      <li><a class="option" 
+                      href="https://github.com/bmachlin/chronography" 
+                      id='show-about'>Source</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- content -->
+        <div class="container-fluid" id="main-contain">
+            <div class="row" id="title-row"></div>
+
+            <div class="row" id="content-row">
+
+                  <div id ="intro" class="container">
+
+                      <h1><a href="avgs.html">Chronography</a></h1>
+                      <p class="lead" id="description">This tool allows you to select a group of songs, e.g. an album, a playlist, and calculates the average properties of the songs.</p>
+                      <div id="buttons" class="row">
+
+                          <span class="col-xs-offset-2 xform-control">
+
+                              <button class="btn btn-outline-default btn-sm" id='playlists-button' type="button">Show My Playlists</button> 
+
+                          </span>
+
+                          <div class='input-group' id="input">
+                              <form id="search">
+                                  <input type="text" name="artist">
+                                  <input type="submit" value="Search for Artist" id="artist-search">
+                                  <input type="text" name="album">
+                                  <input type="submit" value="Search for Album" id="album-search">
+                              </form>
+                          </div>
+
+                      </div>
+
+                  </div>
+
+                  <div id="search-results" class="container">
+                    <form id="result-form">
+                      <input type="hidden" name="type" id="result-type">
+                      <input type="hidden" name="id" id="result-id">
+                      <div id='result-buttons'></div>
+                    </form>
+                  </div>
+
+                  <div id="data-results" class="container">
+                  <h2 id="result-name"></h2>
+
+                    <select id="feature-selector" onchange="updateChart();">
+                      <option value="none">--select attribute--</option>
+                      <option value="danceability">Danceability</option>
+                      <option value="energy">Energy</option>
+                      <option value="key">Key</option>
+                      <option value="loudness">Loudness</option>
+                      <option value="mode">Mode</option>
+                      <option value="speechiness">Speechiness</option>
+                      <option value="instrumentalness">Instrumentallness</option>
+                      <option value="acousticness">Acousticness</option>
+                      <option value="liveness">Liveness</option>
+                      <option value="valence">Valence</option>
+                      <option value="tempo">Tempo</option>
+                      <option value="time_signature">Time Signature</option>
+                    </select>
+
+                    <select id="feature-selector-2" onchange="updateChart();">
+                      <option value="none">--select attribute--</option>
+                      <option value="danceability">Danceability</option>
+                      <option value="energy">Energy</option>
+                      <option value="key">Key</option>
+                      <option value="loudness">Loudness</option>
+                      <option value="mode">Mode</option>
+                      <option value="speechiness">Speechiness</option>
+                      <option value="instrumentalness">Instrumentallness</option>
+                      <option value="acousticness">Acousticness</option>
+                      <option value="liveness">Liveness</option>
+                      <option value="valence">Valence</option>
+                      <option value="tempo">Tempo</option>
+                      <option value="time_signature">Time Signature</option>
+                    </select>
+
+                    <div class="ct-chart ct-golden-section result-chart" id="result-chart"></div>
+                    <div class="ct-chart ct-golden-section result-chart" id="result-chart2"></div>
+                  </div>
+
+              </div>
+
+              <div class="col-sm-offset-11 col-sm-1" id="authorize-button">
+                  <h1 id="authorize-text">Authorize</h1>
+              </div>
+
+          </div>
+        <script src="avgs-processing.js"></script>
+        <script src="avgs-search-results.js"></script>
+        <script src="avgs3.js"></script>
+    </body>
+</html>
+
+    
