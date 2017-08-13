@@ -1,3 +1,8 @@
+var resultArray = [];
+var queryLimit = 40;
+var resultIndex = 0;
+var RESULT_THRESHOLD = 10;
+
 function getPlaylists(limit, offset) {
     return fetchCurrentUserPlaylists(function(r) {
         getPlaylistsNext(r);
@@ -18,7 +23,7 @@ function getPlaylistsNext(data) {
 }
 
 function getAlbums(query, offset=0) {
-    searchSpotifyOptions(query, 'album', 20, offset, function(r) {
+    searchSpotifyOptions(query, 'album', queryLimit, offset, function(r) {
         if(r == null) {
             //error
         } else {
@@ -34,18 +39,18 @@ function getAlbums(query, offset=0) {
                 }
             }
             console.log(r.only_albums);
-            displaySearch(r.only_albums, 'album', query, offset);
+            processSearch(r.only_albums, 'album', query, offset);
         }
     });
 }
 
 function getArtists(query, offset=0) {
-    searchSpotifyOptions(query, 'artist', 20, offset, function(r) {
+    searchSpotifyOptions(query, 'artist', queryLimit, offset, function(r) {
         if(r == null) {
             //error
         } else {
             console.log(r);
-            displaySearch(r.artists.items, 'artist');
+            processSearch(r.artists.items, 'artist', query, offset);
         }
     });
 }
@@ -63,8 +68,8 @@ function displayPlaylists(pArray) {
 
 }
 
-function displaySearch(sArray, type, query, offset) {
-    console.log("displaySearch");
+function processSearch(sArray, type, query, offset) {
+    console.log("processSearch");
     
     var $more = $('<input/>').attr({
         type: 'button',
@@ -74,21 +79,33 @@ function displaySearch(sArray, type, query, offset) {
     
     if(type === 'album') {
         for(var i = 0; i < sArray.length; i++) {
-            addResultButton(sArray[i].displayName, sArray[i].id);
+            sArray[i].name = sArray[i].displayName;
+            resultArray[resultArray.length] = sArray[i];
         }        
         $more.on('click', function(event) {
             $($more.id).remove();
-            getAlbums(query, offset+20);
+            getAlbums(query, offset+queryLimit);
         });
     } else {
         for(var i = 0; i < sArray.length; i++) {
-            addResultButton(sArray[i].name, sArray[i].id);
+            resultArray[resultArray.length] = sArray[i];
         }
         $more.on('click', function(event) {
-            getArtists(query, offset+20);
+            getArtists(query, offset+queryLimit);
         });
     }
-    
+
+    if(resultArray.length < RESULT_THRESHOLD) {
+        if(type == 'album')
+            getAlbums(query, offset+queryLimit);
+        else
+            getArtists(query, offset+queryLimit);
+        return;
+    }
+    var resultLimit = resultIndex+RESULT_THRESHOLD;
+    for(; resultIndex < resultLimit; resultIndex++) {
+        addResultButton(resultArray[resultIndex].name, resultArray[resultIndex].id);    
+    }
 
     $("#result-buttons").append($more);
     $("#result-buttons").append("<br>");
