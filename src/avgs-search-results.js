@@ -2,6 +2,7 @@ var resultArray = [];
 var queryLimit = 40;
 var resultIndex = 0;
 var RESULT_THRESHOLD = 10;
+var loadedMoreCount = 0;
 
 function getPlaylists(limit, offset) {
     return fetchCurrentUserPlaylists(function(r) {
@@ -73,7 +74,7 @@ function processSearch(sArray, type, query, offset) {
     
     var $more = $('<input/>').attr({
         type: 'button',
-        id: "moreBtn",
+        id: "moreBtn" + loadedMoreCount++,
         value: "Load more..."
     });
     
@@ -83,7 +84,7 @@ function processSearch(sArray, type, query, offset) {
             resultArray[resultArray.length] = sArray[i];
         }        
         $more.on('click', function(event) {
-            $($more.id).remove();
+            document.getElementById(this.id).remove();
             getAlbums(query, offset+queryLimit);
         });
     } else {
@@ -91,6 +92,7 @@ function processSearch(sArray, type, query, offset) {
             resultArray[resultArray.length] = sArray[i];
         }
         $more.on('click', function(event) {
+            document.getElementById(this.id).remove();            
             getArtists(query, offset+queryLimit);
         });
     }
