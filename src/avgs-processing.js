@@ -1,7 +1,6 @@
 var chartData = {};
 var labels = ['danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
 				'instrumentalness', 'liveness', 'valence', 'tempo', 'time_signature']; //  'mode',
-var zero_one = ['danceability', 'energy', 'speechiness', 'instrumentalness', 'acousticness', 'liveness', 'valence'];
 var options = {
 	axisX: { showGrid: false },
 	divisor: 10
@@ -35,7 +34,7 @@ function generateAverages(id, type, accessToken) {
     }
 
     if(type === 'artist') {
-    	getArtistData(id, 0);
+    	processArtist(id);
     }
 
     if(type === 'playlist') {
@@ -43,13 +42,24 @@ function generateAverages(id, type, accessToken) {
     }
 }
 
+function processArtist(id) {
+	setupDataObjects();
+
+	fetchArtist(id, function(data) {
+		if(!data) {
+			// error
+		} else {
+
+		}
+	});
+}
 
 function processAlbum(id) {
 	setupDataObjects();
 
 	fetchFromId(id, 'albums', function(data) {
 		if(!data) {
-			//eror
+			// error
 		} else {
 			var title = data.name + ' by ' + data.artists[0].name;
 			console.log(data, title);
@@ -69,7 +79,7 @@ function processAlbum(id) {
 							duration: track.duration_ms / 1000
 						}
 
-						getTrackFeatures(features);
+						addTrackFeatures(features, 0);
 					});
 				}
 			});
@@ -78,7 +88,7 @@ function processAlbum(id) {
 }
 
 
-function processTrack(trackFeatures) {
+function processTrack(trackFeatures, albumNum) {
 	var name = trackFeatures.name;
 	var featIndex = name.indexOf("feat.");
 	if(featIndex == -1)
@@ -93,36 +103,36 @@ function processTrack(trackFeatures) {
 	}
 
 
-	chartData['danceability']['series'][0][trackFeatures.track_number] = trackFeatures.danceability;
+	chartData['danceability']['series'][albumNum][trackFeatures.track_number] = trackFeatures.danceability;
 	chartData['danceability']['labels'][trackFeatures.track_number] = name;
-	chartData['energy']['series'][0][trackFeatures.track_number] = trackFeatures.energy;
+	chartData['energy']['series'][albumNum][trackFeatures.track_number] = trackFeatures.energy;
 	chartData['energy']['labels'][trackFeatures.track_number] = name;
-	chartData['key']['series'][0][trackFeatures.track_number] = trackFeatures.key;
+	chartData['key']['series'][albumNum][trackFeatures.track_number] = trackFeatures.key;
 	chartData['key']['labels'][trackFeatures.track_number] = name;
-	chartData['loudness']['series'][0][trackFeatures.track_number] = trackFeatures.loudness;
+	chartData['loudness']['series'][albumNum][trackFeatures.track_number] = trackFeatures.loudness;
 	chartData['loudness']['labels'][trackFeatures.track_number] = name;
-	// chartData['mode']['series'][0][trackFeatures.track_number] = trackFeatures.mode;
+	// chartData['mode']['series'][albumNum][trackFeatures.track_number] = trackFeatures.mode;
 	// chartData['mode']['labels'][trackFeatures.track_number] = name;
-	chartData['speechiness']['series'][0][trackFeatures.track_number] = trackFeatures.speechiness;
+	chartData['speechiness']['series'][albumNum][trackFeatures.track_number] = trackFeatures.speechiness;
 	chartData['speechiness']['labels'][trackFeatures.track_number] = name;
-	chartData['acousticness']['series'][0][trackFeatures.track_number] = trackFeatures.acousticness;
+	chartData['acousticness']['series'][albumNum][trackFeatures.track_number] = trackFeatures.acousticness;
 	chartData['acousticness']['labels'][trackFeatures.track_number] = name;
-	chartData['instrumentalness']['series'][0][trackFeatures.track_number] = trackFeatures.instrumentalness;
+	chartData['instrumentalness']['series'][albumNum][trackFeatures.track_number] = trackFeatures.instrumentalness;
 	chartData['instrumentalness']['labels'][trackFeatures.track_number] = name;
-	chartData['liveness']['series'][0][trackFeatures.track_number] = trackFeatures.liveness;
+	chartData['liveness']['series'][albumNum][trackFeatures.track_number] = trackFeatures.liveness;
 	chartData['liveness']['labels'][trackFeatures.track_number] = name;
-	chartData['valence']['series'][0][trackFeatures.track_number] = trackFeatures.valence;
+	chartData['valence']['series'][albumNum][trackFeatures.track_number] = trackFeatures.valence;
 	chartData['valence']['labels'][trackFeatures.track_number] = name;
-	chartData['tempo']['series'][0][trackFeatures.track_number] = trackFeatures.tempo;
+	chartData['tempo']['series'][albumNum][trackFeatures.track_number] = trackFeatures.tempo;
 	chartData['tempo']['labels'][trackFeatures.track_number] = name;
-	chartData['time_signature']['series'][0][trackFeatures.track_number] = trackFeatures.time_signature;
+	chartData['time_signature']['series'][albumNum][trackFeatures.track_number] = trackFeatures.time_signature;
 	chartData['time_signature']['labels'][trackFeatures.track_number] = name;
 
 	updateChart();
 }
 
 
-function getTrackFeatures(features) {
+function addTrackFeatures(features, albumNum) {
 	fetchAudioFeatures(features.id, function(data) {
 		if(!data) {
 			//error
@@ -142,46 +152,32 @@ function getTrackFeatures(features) {
 			features['time_signature'] = data.time_signature;
 
 			// console.log(features);
-			processTrack(features);			
+			processTrack(features, albumNum);			
 		}
 	});
 }
 
-function getLow(feature) {
+function getFeatureLow(feature) {
 	
-	if(zero_one.contains(feature)) {
+	if(feature === 'loudness')
+		return -60;
+	else
 		return 0;
-	}
-	switch (feature) {
-		case 'loudness':
-			return -60;
-		case 'key':
-			return 0;
-		case 'mode':
-			return 0;
-		case 'tempo':
-			return 0;
-		case 'time_signature':
-			return 0;
-	}
 }
 
-function getHigh(feature) {
-	if(zero_one.contains(feature)) {
-		return 1;
-	}
+function getFeatureHigh(feature) {
 
 	switch (feature) {
 		case 'loudness':
 			return 4;
 		case 'key':
 			return 11;
-		case 'mode':
-			return 1;
 		case 'tempo':
 			return 300;
 		case 'time_signature':
 			return 16;
+		default:
+			return 1;
 	}
 }
 

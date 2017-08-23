@@ -1,9 +1,10 @@
-var accessToken = null;
-var refreshToken = null;
+var access_token = null;
+var refresh_token = null;
 var args = {};
 var results = [];
-var redirect = 'http://localhost:8000/SpotifyTools/tools/avgs/avgs.html';
+var redirect = 'http://localhost:5000';
 var client = '7fc1ac4a76fe46fbb0d8b2791512daf2';
+var secret = '9eb898b7b90c48c1a01cf298199bcf44'
 var username = "";
 var type = "";
 
@@ -58,58 +59,36 @@ $(document).ready(function() {
     args = parseArgs();
 
     if ('id' in args) {
-
-        generateAverages(args['id'], args['type']);
-
-    } else if ('artist' in args) {
-
-        type = 'artist';
-        getArtists(args['artist']);
-
-    } else if ('album' in args) {
-
-        type = 'album';
-        getAlbums(args['album']);
-    }
-
-    if ('access_token' in args) {
-        accessToken = args['access_token'];
-        setAccessToken(accessToken);
-        var u = fetchCurrentUserProfile(function(user) {
-            if (user) username = user.id;
-        });
-
-        u.done(function() {
-            $("#authorize-button").hide();
-            $("#playlists-button").on('click', function(event) {
-                $("#result-buttons").empty();
-                type = 'playlist';
-                getPlaylists(50, 0);
-            });
-        });
+        $("#authorize-button").hide();
+        generateAverages(args['id'], args['type'], args['access_token']);
 
     } else {
-        $("#authorize-button").on('click', function(event) {
-            authorizeUser(client, redirect, ['playlist-read-private']);
-        });
-        $("#playlists-button").on('click', function(event) {
-            authorizeUser(client, redirect, ['playlist-read-private']);
-        });
+        $("#data-results").hide();
+
+        if ('access_token' in args) {
+            $("#authorize-button").hide();
+            access_token = args['access_token'];
+            setAccessToken(access_token);
+        } else {
+
+            $("#authorize-button").on('click', function(event) {
+                authorizeUserImplicit(client, redirect, ['playlist-read-private']);
+            });
+            $("#playlists-button").on('click', function(event) {
+                authorizeUserImplicit(client, redirect, ['playlist-read-private']);
+            });
+        }
+        
+        if ('artist' in args) {
+
+            type = 'artist';
+            getArtists(args['artist'], 0);
+
+        } else if ('album' in args) {
+
+            type = 'album';
+            getAlbums(args['album'], 0);
+        }
+
     }
 });
-
-
-
-
-
-/*
-
-LINEAR GRAPH FOR DIFFERENT PARAMETERS RATHER THAN JUST AVERAGE
-
-CURATED PLAYLIST ORDER BASED ON CHOSEN PARAMETERS
-^PLAYLIST ORDERING ALGORITHM
-
-
-ENTER ARTIST:
-CREATE GRAPH(S) OF HOW THEIR DIFFERENT METRICS CHANGE OVER TIME
-*/
