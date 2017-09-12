@@ -1,5 +1,5 @@
 var resultArray = [];
-var queryLimit = 40;
+var queryLimit = 10;
 var resultIndex = 0;
 var RESULT_THRESHOLD = 10;
 var loadedMoreCount = 0;
@@ -24,34 +24,41 @@ function getPlaylistsNext(data) {
 }
 
 function getAlbums(query, offset=0) {
-    searchSpotifyOptions(query, 'album', queryLimit, offset, function(r) {
+    var options = {
+        type: 'album',
+        limit: queryLimit,
+        offset: offset
+    };
+    searchSpotify(query, options, function(r) {
         if(r == null) {
             //error
         } else {
             r.only_albums = [];
-            var iter = 0;
-            console.log(r);
+            var albumIndex = 0;
             for (var i = 0; i < r.albums.items.length; i++) {
                 if(r.albums.items[i].album_type === "album") {
-                    console.log(r.albums.items[i].name + " - " + r.albums.items[i].artists[0].name);
-                    r.only_albums[iter] = r.albums.items[i];
-                    r.only_albums[iter].displayName = r.albums.items[i].name + ' - ' + r.albums.items[i].artists[0].name;
-                    iter++;
+                    r.only_albums[albumIndex] = r.albums.items[i];
+                    r.only_albums[albumIndex].displayName = r.albums.items[i].name + ' - ' + r.albums.items[i].artists[0].name;
+                    albumIndex++;
                 }
             }
-            console.log(r.only_albums);
-            processSearch(r.only_albums, 'album', query, offset);
+            processSearch(r.only_albums, query, options);
         }
     });
 }
 
 function getArtists(query, offset=0) {
-    searchSpotifyOptions(query, 'artist', queryLimit, offset, function(r) {
-        if(r == null) {
+    var options = {
+        type: 'artist',
+        limit: queryLimit,
+        offset: offset
+    };
+    searchSpotify(query, options, function(data) {
+        if(data == null) {
             //error
         } else {
-            console.log(r);
-            processSearch(r.artists.items, 'artist', query, offset);
+            // console.log(data);
+            processSearch(data.artists.items, query, options);
         }
     });
 }
@@ -69,7 +76,7 @@ function displayPlaylists(pArray) {
 
 }
 
-function processSearch(sArray, type, query, offset) {
+function processSearch(sArray, query, options) {
     console.log("processSearch");
     
     var $more = $('<input/>').attr({
@@ -78,14 +85,15 @@ function processSearch(sArray, type, query, offset) {
         value: "Load more..."
     });
     
-    if(type === 'album') {
+    if(options.type === 'album') {
         for(var i = 0; i < sArray.length; i++) {
             sArray[i].name = sArray[i].displayName;
             resultArray[resultArray.length] = sArray[i];
+            console.log(resultArray[resultArray.length-1].name);
         }        
         $more.on('click', function(event) {
             document.getElementById(this.id).remove();
-            getAlbums(query, offset+queryLimit);
+            getAlbums(query, options.offset+queryLimit);
         });
     } else {
         for(var i = 0; i < sArray.length; i++) {
@@ -93,30 +101,32 @@ function processSearch(sArray, type, query, offset) {
         }
         $more.on('click', function(event) {
             document.getElementById(this.id).remove();            
-            getArtists(query, offset+queryLimit);
+            getArtists(query, options.offset+queryLimit);
         });
     }
 
     if(resultArray.length < RESULT_THRESHOLD) {
-        if(type == 'album')
-            getAlbums(query, offset+queryLimit);
+        console.log("Recursing...");
+        if(options.type == 'album')
+            getAlbums(query, options.offset+queryLimit);
         else
-            getArtists(query, offset+queryLimit);
+            getArtists(query, options.offset+queryLimit);
         return;
     }
     var resultLimit = resultIndex+RESULT_THRESHOLD;
-    for(; resultIndex < resultLimit; resultIndex++) {
+    console.log("result limit: " + resultLimit);
+    for(; resultIndex < resultLimit && resultIndex < resultArray.length; resultIndex++) {
         addResultButton(resultArray[resultIndex].name, resultArray[resultIndex].id);    
     }
 
     $("#result-buttons").append($more);
     $("#result-buttons").append("<br>");
 
-    $("#result-type").attr("value", type);
+    $("#result-type").attr("value", options.type);
 }
 
 function addResultButton(name, id) {
-    console.log(name, id);
+    // console.log(name, id);
 
     var $result = $('<input/>').attr({
         type: 'submit',

@@ -3,8 +3,8 @@ var refresh_token = null;
 var args = {};
 var results = [];
 var redirect = 'http://localhost:5000';
-var client = '7fc1ac4a76fe46fbb0d8b2791512daf2';
-var secret = '9eb898b7b90c48c1a01cf298199bcf44'
+var client = config.client;
+var secret = config.secret;
 var username = "";
 var type = "";
 
@@ -15,10 +15,8 @@ function parseArgs() {
 
     // get spotify tokens and search parameters    
     var params = ps.split('&');
-    
     var tokens = hash.split('&');
 
-    
     _.each(params, function(keyvalue) {
         var kv = keyvalue.split('=');
         var key = kv[0];
