@@ -3,14 +3,13 @@ var labels = ['danceability', 'energy', 'key', 'loudness', 'speechiness', 'acous
 				'instrumentalness', 'liveness', 'valence', 'tempo', 'time_signature'];
 var options = {
 	axisX: { showGrid: false },
-	divisor: 10
+	divisor: 5
 }
 var options2 = {
 	axisX: { showGrid: false,
 			 showLabel: false },
 	axisY: { position: 'end'},
-	divisor: 10,
-
+	divisor: 5
 }
 
 function setupDataObjects(obj) {
@@ -46,11 +45,13 @@ function generateAverages(id, type, accessToken) {
 function processArtist(id) {
 	setupDataObjects();
 
-	fetchArtist(id, {}, function(data) {
+	fetchArtistAlbums(id, {limit: 50, album_type: ['album']}, function(data) {
 		if(!data) {
 			// error
 		} else {
-
+			console.log(data);
+			var title = data.items[0].artists[0].name;
+			$('#result-name').html(title);
 		}
 	});
 }
@@ -199,6 +200,8 @@ function updateChart() {
 
 	if(snone) {
 		$("#result-chart").show();
+		options.low = getFeatureLow(selected);
+		options.high = getFeatureHigh(selected);
 		chartSetter['labels'] = chartData[selected]['labels'];
 		chartSetter['series'][0] = chartData[selected]['series'][0];
 		new Chartist.Line('#result-chart', chartSetter, options);
@@ -208,6 +211,8 @@ function updateChart() {
 	
 	if(snone2) {
 		$("#result-chart2").show();
+		options2.low = getFeatureLow(selected2);
+		options2.high = getFeatureHigh(selected2);
 		chartSetter2['labels'] = chartData[selected]['labels'];
 		chartSetter2['series'][1] = chartData[selected2]['series'][0];
 		new Chartist.Line('#result-chart2', chartSetter2, options2);

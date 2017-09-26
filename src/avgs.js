@@ -36,23 +36,6 @@ function parseArgs() {
     return args;
 }
 
-
-function getAverage(data) {
-    if (!data) {
-        console.log("no data");
-    }
-
-
-    if (data.next) {
-        callSpotify(data.next, {}, function(data) {
-            getAverage(data);
-        });
-    } else {
-        console.log("done getting data");
-    }
-}
-
-
 $(document).ready(function() {
     args = parseArgs();
 
@@ -72,9 +55,9 @@ $(document).ready(function() {
             $("#authorize-button").on('click', function(event) {
                 authorizeUserImplicit(client, redirect, ['playlist-read-private']);
             });
-            $("#playlists-button").on('click', function(event) {
-                authorizeUserImplicit(client, redirect, ['playlist-read-private']);
-            });
+            // $("#playlists-button").on('click', function(event) {
+            //     authorizeUserImplicit(client, redirect, ['playlist-read-private']);
+            // });
         }
         
         if ('artist' in args) {

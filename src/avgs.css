@@ -17,6 +17,7 @@ a:hover
 
 /* CHART STUFF */
 #result-name {
+    font-size: 1em;
     color: #FFFFFF;
 }
 
@@ -44,7 +45,7 @@ a:hover
 
 .ct-labels span {
    color: #FFFFFF;
-   font-size: 16px;
+   font-size: 8px;
 }
 
 .ct-series-a .ct-line {
@@ -71,21 +72,11 @@ a:hover
     width:90%;
     text-align:center;
     display:none;
-    font-size:22px;
-}
-
-#main h1 {
-    font-size: 64px;
-    color: #DD5285;
-}
-
-#main h2 {
-    font-size: 32px;
-    color: #DD5285;
+    font-size:12px;
 }
 
 #main div {
-	 font-size: 24px;
+	 font-size: 0.1em;
 	 color: #FFFFFF;
 }
 
@@ -96,27 +87,36 @@ a:hover
     text-align:center;
     margin-bottom:10px;
     height:32px;
-    font-size:24px;
+    font-size:16px;
 }
 
 #intro h1 {
      color: #DD5285;
+     font-size: 2em;
      font-family: titleFont;
 }
 
 #intro p {
 	 color: #FFFFFF;
-	 font-size: 1em;
+	 font-size: 0.5em;
 }
 
 .form-inline {
 	 color: #DD5285;
 }
 
+.input #artist-search {
+    height: 0.25em;
+}
+
+
+
+
+
 #authorize-button {
     position: fixed;
-    height: 4em;
-    width: 4em;
+    height: 2em;
+    width: 2em;
     right: 5%;
     bottom: 5%;
     border-radius: 100%;
@@ -124,8 +124,8 @@ a:hover
 }
 #authorize-button:hover {
     cursor: pointer;
-    height: 4.20em;
-    width: 4.20em;
+    height: 2.20em;
+    width: 2.20em;
 }
 
 #authorize-text {
@@ -139,7 +139,7 @@ a:hover
     color: #111111;
     margin: auto 0;
     text-align: center;
-    font-size: 0.50em;
+    font-size: 0.25em;
     font-weight: 600;
 }
 
