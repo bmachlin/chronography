@@ -3,8 +3,8 @@ var refresh_token = null;
 var args = {};
 var results = [];
 var redirect = 'http://localhost:5000';
-var client = config.client;
-var secret = config.secret;
+var client = CLIENT_KEY;
+var secret = SECRET_KEY;
 var username = "";
 var type = "";
 
