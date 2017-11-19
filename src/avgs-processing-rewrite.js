@@ -1,11 +1,11 @@
-var chartData = {};
-var labels = ['danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
+let chartData = {};
+let labels = ['danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
 				'instrumentalness', 'liveness', 'valence', 'tempo', 'time_signature'];
-var options = {
+let options = {
 	axisX: { showGrid: false },
 	divisor: 5
 }
-var options2 = {
+let options2 = {
 	axisX: { showGrid: false,
 			 showLabel: false },
 	axisY: { position: 'end'},
@@ -50,7 +50,7 @@ function processArtist(id) {
 			// error
 		} else {
 			console.log(data);
-			var title = data.items[0].artists[0].name;
+			let title = data.items[0].artists[0].name;
 			$('#result-name').html(title);
 		}
 	});
@@ -64,7 +64,7 @@ function processAlbum(id) {
 		if(!data) {
 			// error
 		} else {
-			var title = data.name + ' by ' + data.artists[0].name;
+			let title = data.name + ' by ' + data.artists[0].name;
 			console.log(data, title);
 			$('#result-name').html(title);			
 
@@ -75,7 +75,7 @@ function processAlbum(id) {
 					console.log(data);
 
 					_.each(data.items, function(track) {
-						var features = {
+						let features = {
 							id: track.id,
 							name: track.name,
 							track_number: track.track_number,
@@ -92,12 +92,13 @@ function processAlbum(id) {
 
 
 function processTrack(trackFeatures, albumNum) {
-	var name = trackFeatures.name;
-	var featIndex = name.indexOf("feat.");
+	//todo: add popularity and duration (from track object)
+	let name = trackFeatures.name;
+	let featIndex = name.indexOf("feat.");
 	if(featIndex == -1)
 		featIndex = name.indexOf("Feat.");
 	if(featIndex != -1) {
-		var prevChar = name.substring(featIndex-1, featIndex);
+		let prevChar = name.substring(featIndex-1, featIndex);
 		if(prevChar != " ") {
 			name = name.substring(0, featIndex-1);
 		} else {
@@ -182,18 +183,18 @@ function getFeatureHigh(feature) {
 }
 
 function updateChart() {
-	var selected = $("#feature-selector").val();
-	var selected2 = $("#feature-selector-2").val();
+	let selected = $("#feature-selector").val();
+	let selected2 = $("#feature-selector-2").val();
 	// console.log(selected, selected2);
-	var snone = selected != "none"; // true if something was selected in box 1
-	var snone2 = selected2 != "none"; // true if something was selected in box 2
+	let snone = selected != "none"; // true if something was selected in box 1
+	let snone2 = selected2 != "none"; // true if something was selected in box 2
 	
-	var chartSetter = {
+	let chartSetter = {
 		labels: [],
 		series: []
 	};
 
-	var chartSetter2 = {
+	let chartSetter2 = {
 		labels: [],
 		series: [[],[]]
 	};

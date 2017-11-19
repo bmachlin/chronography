@@ -1,8 +1,8 @@
-var resultArray = [];
-var queryLimit = 10;
-var resultIndex = 0;
-var RESULT_THRESHOLD = 10;
-var loadedMoreCount = 0;
+let resultArray = [];
+let queryLimit = 10;
+let resultIndex = 0;
+let RESULT_THRESHOLD = 10;
+let loadedMoreCount = 0;
 
 function getPlaylists(limit, offset) {
     return fetchCurrentUserPlaylists(function(r) {
@@ -24,7 +24,7 @@ function getPlaylistsNext(data) {
 }
 
 function getAlbums(query, offset=0) {
-    var options = {
+    let options = {
         type: 'album',
         limit: queryLimit,
         offset: offset
@@ -34,8 +34,8 @@ function getAlbums(query, offset=0) {
             //error
         } else {
             r.only_albums = [];
-            var albumIndex = 0;
-            for (var i = 0; i < r.albums.items.length; i++) {
+            let albumIndex = 0;
+            for (let i = 0; i < r.albums.items.length; i++) {
                 if(r.albums.items[i].album_type === "album") {
                     r.only_albums[albumIndex] = r.albums.items[i];
                     r.only_albums[albumIndex].displayName = r.albums.items[i].name + ' - ' + r.albums.items[i].artists[0].name;
@@ -48,7 +48,7 @@ function getAlbums(query, offset=0) {
 }
 
 function getArtists(query, offset=0) {
-    var options = {
+    let options = {
         type: 'artist',
         limit: queryLimit,
         offset: offset
@@ -67,7 +67,7 @@ function getArtists(query, offset=0) {
 function displayPlaylists(pArray) {
     console.log("displayPlaylists");
 
-    for(var i = 0; i < pArray.length; i++) {
+    for(let i = 0; i < pArray.length; i++) {
         if(pArray[i].owner.id == username)
             addResultButton(pArray[i].name, pArray[i].id);
     }
@@ -79,14 +79,14 @@ function displayPlaylists(pArray) {
 function processSearch(sArray, query, options) {
     console.log("processSearch");
     
-    var $more = $('<input/>').attr({
+    let $more = $('<input/>').attr({
         type: 'button',
         id: "moreBtn" + loadedMoreCount++,
         value: "Load more..."
     });
     
     if(options.type === 'album') {
-        for(var i = 0; i < sArray.length; i++) {
+        for(let i = 0; i < sArray.length; i++) {
             sArray[i].name = sArray[i].displayName;
             resultArray[resultArray.length] = sArray[i];
             console.log(resultArray[resultArray.length-1].name);
@@ -96,7 +96,7 @@ function processSearch(sArray, query, options) {
             getAlbums(query, options.offset+queryLimit);
         });
     } else {
-        for(var i = 0; i < sArray.length; i++) {
+        for(let i = 0; i < sArray.length; i++) {
             resultArray[resultArray.length] = sArray[i];
         }
         $more.on('click', function(event) {
@@ -113,7 +113,7 @@ function processSearch(sArray, query, options) {
             getArtists(query, options.offset+queryLimit);
         return;
     }
-    var resultLimit = resultIndex+RESULT_THRESHOLD;
+    let resultLimit = resultIndex+RESULT_THRESHOLD;
     console.log("result limit: " + resultLimit);
     for(; resultIndex < resultLimit && resultIndex < resultArray.length; resultIndex++) {
         addResultButton(resultArray[resultIndex].name, resultArray[resultIndex].id);    
@@ -128,7 +128,7 @@ function processSearch(sArray, query, options) {
 function addResultButton(name, id) {
     // console.log(name, id);
 
-    var $result = $('<input/>').attr({
+    let $result = $('<input/>').attr({
         type: 'submit',
         id: id,
         value: name
