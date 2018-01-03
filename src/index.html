@@ -21,18 +21,18 @@
 
     <body>
         
-        <div class="container-fluid" id="main">
+        <div id="main">
 
                 <div id ="intro">
 
                     <h1><a href="/">CHRONOGRAPHY</a></h1>
                         <p class="lead" id="description">This tool allows you to view the change in musical attributes over time of a collection of tracks.</p>
 
-                    <div id="buttons" class="row">
+                    <div id="buttons">
 
                         <div class='input-group' id="input">
                             <form id="search">
-                                <input type="text" name="album" autocomplete="off" spellcheck="false" id="search-query">
+                                <input type="text" name="q" autocomplete="off" spellcheck="false" id="search-query">
                                 <div id="search-button" onclick="formSearch();">Search</div>
                             </form>
                         </div>
@@ -41,9 +41,12 @@
 
                 </div>
 
-                <div id="search-results">
-
-                    <div id='result-buttons'></div>
+                <div id="search-results" class="container">
+                    <div id="result-buttons" class="row">
+                        <div id='album-buttons' class="col-sm">Albums</div>
+                        <div id='artist-buttons' class="col-sm">Artists</div>
+                        <div id='playlist-buttons' class="col-sm">Playlists</div>
+                    </div>
 
                 </div>
 
@@ -97,7 +100,7 @@
           </div>
         <script src="lib/sc.js"></script>
         <script src="config.js"></script>
-        <script src="avgs-processing-rewrite.js"></script>
+        <script src="avgs-processing.js"></script>
         <script src="avgs-search-results.js"></script>
         <script src="avgs.js"></script>
     </body>

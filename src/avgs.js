@@ -50,9 +50,7 @@ function parseArgs() {
 }
 
 function formSearch() {
-    let q = $("#search-query").val();
-    setState(STATE_SEARCH);
-    search(q);
+    window.location.href = config.redirect + "?q=" + $("#search-query").val();
 }
 
 function setState(s) {
@@ -71,7 +69,7 @@ function setState(s) {
 
     if(s == STATE_AUTH) {
         $("#data-results").hide();
-        $("#search-results").show();
+        $("#search-results").hide();
         $("#buttons").show();
         $("#description").show();
         $("#authorize-button").hide();
@@ -126,6 +124,16 @@ $(document).ready(function() {
         if(!isAccessExpired())
             generateAverages(args['id'], args['type'], getAccessToken());
         else
+            setState(STATE_INIT);
+        return;
+    }
+
+    if('q' in args) {
+        setState(STATE_SEARCH);
+        if(!isAccessExpired()) {
+            search(args['q']);
+            $("#search-query").val(args['q']);
+        } else
             setState(STATE_INIT);
     }
 });
