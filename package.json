@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/bmachlin/chronography#readme",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "jquery": "^3.2.1",
+    "popper.js": "^1.12.9"
   }
 }

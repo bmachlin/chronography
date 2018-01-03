@@ -1,5 +1,5 @@
 let chartData = {};
-let labels = ['danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
+let labels = ['popularity', 'danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
 				'instrumentalness', 'liveness', 'valence', 'tempo', 'time_signature'];
 let options = {
 	axisX: { showGrid: false },
@@ -129,12 +129,17 @@ function processTrack(trackFeatures, albumNum) {
 	chartData['tempo']['labels'][trackFeatures.track_number] = name;
 	chartData['time_signature']['series'][albumNum][trackFeatures.track_number] = trackFeatures.time_signature;
 	chartData['time_signature']['labels'][trackFeatures.track_number] = name;
+	chartData['popularity']['series'][albumNum][trackFeatures.track_number] = trackFeatures.popularity;
+	chartData['popularity']['labels'][trackFeatures.track_number] = name;
+	chartData['duration']['series'][albumNum][trackFeatures.track_number] = trackFeatures.duration;
+	chartData['duration']['labels'][trackFeatures.track_number] = name;
 
 	updateChart();
 }
 
 
 function addTrackFeatures(features, albumNum) {
+	console.log("addtrackfeatures");
 	fetchAudioFeatures(features.id, function(data) {
 		if(!data) {
 			//error
@@ -152,10 +157,21 @@ function addTrackFeatures(features, albumNum) {
 			features['tempo'] = data.tempo;
 			features['time_signature'] = data.time_signature;
 
+			fetchTrack(features.id, {}, function(data) {
+				if(!data) {
+					//error
+				} else {
+					features['popularity'] = data.popularity;
+				}
+				processTrack(features, albumNum);
+			});
+
 			// console.log(features);
-			processTrack(features, albumNum);			
+					
 		}
 	});
+
+	
 }
 
 function getFeatureLow(feature) {
@@ -176,7 +192,9 @@ function getFeatureHigh(feature) {
 		case 'tempo':
 			return 300;
 		case 'time_signature':
-			return 16;
+			return 15;
+		case 'popularity':
+			return 100;
 		default:
 			return 1;
 	}
@@ -247,6 +265,13 @@ function getTrackFeatures(trackID, trackObject) {
 			trackObject['valence'] = data.valence;
 			trackObject['tempo'] = data.tempo;
             trackObject['time_signature'] = data.time_signature;	
+		}
+	});
+	fetchTrack(trackID, {}, function(data) {
+		if(!data) {
+			//error
+		} else {
+			trackObject['popularity'] = data.popularity;
 		}
 	});
 }

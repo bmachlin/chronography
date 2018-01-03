@@ -15,9 +15,122 @@ a:hover
 }
 
 
+.butt {
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: .3vw;
+    color: white;
+    background-color: gray;
+    cursor: pointer;
+}
+
+#main {
+    margin-top:5vh;    
+    margin: auto;
+    width:90%;
+    font-size:2vw;
+    color: #FFFFFF;
+}
+
+#intro {
+    margin-top: 5vh;
+}
+
+#intro h1 {
+    color: #DD5285;
+    font-size: 6.9vw;
+    font-family: titleFont;
+    text-align: center;
+    letter-spacing: 1vw;
+}
+
+#intro p {
+    color: #FFFFFF;
+    font-size: 2vw;
+    width: 60%;
+    margin: auto;
+    padding: 1vw;
+    padding-bottom: 2.5vw;
+    
+}
+
+#search {
+    margin: auto;
+}
+
+#search-results {
+    margin-top: 5vh;
+}
+
+input {
+	border:2px solid rgba(255,255,255,.5);
+	font-size: 2.3vw;
+	padding:.1vw .6vw .15vw;
+	color:rgba(255,255,255,.5);
+	border-radius:.5vw;
+	background:transparent;
+	transition: all .200s;
+}
+
+input:focus{
+    outline: none;
+    color:rgba(255,255,255,.75);
+    border-color: #DD5285;
+}
+
+#search-button {
+    font-weight: 200;
+    margin-left: 10px;
+    display: inline;
+}
+
+#search-button:hover {
+    cursor: pointer;
+}
+
+.result-button {
+    display: table;
+    padding: 5px;
+    font-size: 2vw;
+    margin-bottom: 10px;
+}
+
+select {
+    padding: 5px 8px;
+    border: none;
+    box-shadow: none;
+    background: #3D3D3D;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 1.5vw;
+}
+
+#selectors {
+    display: block;
+}
+
+/* AUTH */
+    
+#authorize-button {
+    height: 2.5vw;
+    width: 20%;
+    margin: auto;    
+    border-radius: 20%;
+    background-color: #DD5285;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.5vw;
+}
+
+#authorize-button:hover {
+    cursor: pointer;
+}
+
 /* CHART STUFF */
 #result-name {
-    font-size: 1em;
+    font-size: 3vw;
+    margin: 40px;
+    margin-left: 0px;
     color: #FFFFFF;
 }
 
@@ -25,16 +138,17 @@ a:hover
     stroke: blue;
     color: #FFFFFF;
 }
+
 #result-chart2 {
     stroke: red;
     color: #FFFFFF;
     position: relative;
     left: 40px;
-    bottom: 400px;
+    bottom: 50vh;
 }
 
 .result-chart {
-    height: 400px;
+    height: 50vh;
 }
 
 /* CHARTIST STUFF */
@@ -45,7 +159,7 @@ a:hover
 
 .ct-labels span {
    color: #FFFFFF;
-   font-size: 8px;
+   font-size: .75vw;
 }
 
 .ct-series-a .ct-line {
@@ -62,85 +176,6 @@ a:hover
 
 .ct-series-b .ct-point {
   stroke: green;
-}
-
-
-#main {
-    margin-top:20px;
-    margin-left:auto;
-    margin-right:auto;
-    width:90%;
-    text-align:center;
-    display:none;
-    font-size:12px;
-}
-
-#main div {
-	 font-size: 0.1em;
-	 color: #FFFFFF;
-}
-
-#info {
-    margin-top:20px;
-    margin-left:10px;
-    width:100%;
-    text-align:center;
-    margin-bottom:10px;
-    height:32px;
-    font-size:16px;
-}
-
-#intro h1 {
-     color: #DD5285;
-     font-size: 2em;
-     font-family: titleFont;
-}
-
-#intro p {
-	 color: #FFFFFF;
-	 font-size: 0.5em;
-}
-
-.form-inline {
-	 color: #DD5285;
-}
-
-.input #artist-search {
-    height: 0.25em;
-}
-
-
-
-
-
-#authorize-button {
-    position: fixed;
-    height: 2em;
-    width: 2em;
-    right: 5%;
-    bottom: 5%;
-    border-radius: 100%;
-    background-color: #DD5285;
-}
-#authorize-button:hover {
-    cursor: pointer;
-    height: 2.20em;
-    width: 2.20em;
-}
-
-#authorize-text {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-
-    color: #111111;
-    margin: auto 0;
-    text-align: center;
-    font-size: 0.25em;
-    font-weight: 600;
 }
 
 @font-face {

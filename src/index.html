@@ -16,93 +16,83 @@
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
         <link rel="stylesheet" href="lib/bower_components/chartist/dist/chartist.min.css">
         <link rel="stylesheet" href="avgs.css" media="screen" title="no title" charset="utf-8">
+        
     </head>
 
     <body>
         
-        <div class="container-fluid" id="main-contain">
+        <div class="container-fluid" id="main">
 
-            <div class="row" id="content-row">
+                <div id ="intro">
 
-                  <div id ="intro" class="container">
+                    <h1><a href="/">CHRONOGRAPHY</a></h1>
+                        <p class="lead" id="description">This tool allows you to view the change in musical attributes over time of a collection of tracks.</p>
 
-                      <h1><a href="/">C H R O N O G R A P H Y</a></h1>
-                      <!-- <p class="lead" id="description">This tool allows you to 
-                          select a group of songs, e.g. an album, a playlist, 
-                          and calculates the average properties of the songs.</p> -->
-                      <div id="buttons" class="row">
+                    <div id="buttons" class="row">
 
-                          <span class="col-xs-offset-2 xform-control">
+                        <div class='input-group' id="input">
+                            <form id="search">
+                                <input type="text" name="album" autocomplete="off" spellcheck="false" id="search-query">
+                                <div id="search-button" onclick="formSearch();">Search</div>
+                            </form>
+                        </div>
 
-                              <!-- <button class="btn btn-outline-default btn-sm" id='playlists-button' type="button">Show My Playlists</button>  -->
+                    </div>
 
-                          </span>
+                </div>
 
-                          <div class='input-group' id="input">
-                              <form id="search">
-                                  <!-- <input type="text" name="artist"> -->
-                                  <!-- <input type="submit" value="Search for Artist" id="artist-search"> -->
-                                  <input type="text" name="album">
-                                  <input type="submit" value="Search for Album" id="album-search">
-                              </form>
-                          </div>
+                <div id="search-results">
 
-                      </div>
+                    <div id='result-buttons'></div>
 
-                  </div>
+                </div>
 
-                  <div id="search-results" class="container">
-                    <form id="result-form">
-                      <input type="hidden" name="type" id="result-type">
-                      <input type="hidden" name="id" id="result-id">
-                      <div id='result-buttons'></div>
-                    </form>
-                  </div>
+                <div id="data-results">
 
-                  <div id="data-results" class="container">
-                  <h2 id="result-name"></h2>
+                    <h2 id="result-name"></h2>
 
-                    <select id="feature-selector" onchange="updateChart();">
-                      <option value="none">--select attribute--</option>
-                      <option value="danceability">Danceability</option>
-                      <option value="energy">Energy</option>
-                      <option value="key">Key</option>
-                      <option value="loudness">Loudness</option>
-                      <!-- <option value="mode">Mode</option> -->
-                      <option value="speechiness">Speechiness</option>
-                      <option value="instrumentalness">Instrumentallness</option>
-                      <option value="acousticness">Acousticness</option>
-                      <option value="liveness">Liveness</option>
-                      <option value="valence">Valence</option>
-                      <option value="tempo">Tempo</option>
-                      <option value="time_signature">Time Signature</option>
-                    </select>
+                    <div id="selectors">
+                        <select id="feature-selector" onchange="updateChart();" style="color: #5F5FFF">
+                            <option value="none">--select attribute--</option>
+                            <option value="popularity">Popularity</option>
+                            <option value="danceability">Danceability</option>
+                            <option value="energy">Energy</option>
+                            <option value="key">Key</option>
+                            <option value="loudness">Loudness</option>
+                            <!-- <option value="mode">Mode</option> -->
+                            <option value="speechiness">Speechiness</option>
+                            <option value="instrumentalness">Instrumentallness</option>
+                            <option value="acousticness">Acousticness</option>
+                            <option value="liveness">Liveness</option>
+                            <option value="valence">Valence</option>
+                            <option value="tempo">Tempo</option>
+                            <option value="time_signature">Time Signature</option>
+                        </select>
 
-                    <select id="feature-selector-2" onchange="updateChart();">
-                      <option value="none">--select attribute--</option>
-                      <option value="danceability">Danceability</option>
-                      <option value="energy">Energy</option>
-                      <option value="key">Key</option>
-                      <option value="loudness">Loudness</option>
-                      <!-- <option value="mode">Mode</option> -->
-                      <option value="speechiness">Speechiness</option>
-                      <option value="instrumentalness">Instrumentallness</option>
-                      <option value="acousticness">Acousticness</option>
-                      <option value="liveness">Liveness</option>
-                      <option value="valence">Valence</option>
-                      <option value="tempo">Tempo</option>
-                      <option value="time_signature">Time Signature</option>
-                    </select>
+                        <select id="feature-selector-2" onchange="updateChart();" style="color:#5EC75E">
+                            <option value="none">--select attribute--</option>
+                            <option value="popularity">Popularity</option>
+                            <option value="danceability">Danceability</option>
+                            <option value="energy">Energy</option>
+                            <option value="key">Key</option>
+                            <option value="loudness">Loudness</option>
+                            <!-- <option value="mode">Mode</option> -->
+                            <option value="speechiness">Speechiness</option>
+                            <option value="instrumentalness">Instrumentallness</option>
+                            <option value="acousticness">Acousticness</option>
+                            <option value="liveness">Liveness</option>
+                            <option value="valence">Valence</option>
+                            <option value="tempo">Tempo</option>
+                            <option value="time_signature">Time Signature</option>
+                        </select>
+                    </div>
 
                     <div class="ct-chart ct-golden-section result-chart" id="result-chart"></div>
                     <div class="ct-chart ct-golden-section result-chart" id="result-chart2"></div>
-                  </div>
 
-              </div>
+                </div>
 
-              <div class="col-sm-offset-11 col-sm-1" id="authorize-button">
-                  <h1 id="authorize-text">Authorize</h1>
-              </div>
+                <div id="authorize-button"> Authorize with Spotify</div>
 
           </div>
         <script src="lib/sc.js"></script>
