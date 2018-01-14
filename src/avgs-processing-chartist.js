@@ -6,6 +6,8 @@ let musicData = {
 
 let labels = ['popularity', 'danceability', 'energy', 'key', 'loudness', 'speechiness', 'acousticness', 
 				'instrumentalness', 'liveness', 'valence', 'tempo', 'time_signature', 'duration'];
+
+
 let options = {
 	axisX: { showGrid: false },
 	divisor: 5

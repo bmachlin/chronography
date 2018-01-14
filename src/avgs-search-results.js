@@ -35,7 +35,7 @@ function displayUserPlaylists(pArray, pic) {
 
     for(let i = 0; i < pArray.length; i++) {
         if(pArray[i].owner.id == username)
-            addResult(pArray[i].name, pArray[i].id, "playlist", pic);
+            addResult(pArray[i]);
     }
 }
 
@@ -52,8 +52,8 @@ function getAlbums(query, offset=0) {
         } else {
             console.log(r);
             if(r.status == 401) {
-                //unauthorized
-                setState(STATE_INIT);
+                console.log("unauthorized");              
+                setState(STATE_RESET);
                 return;
             }
             r.filtered_albums = [];
@@ -86,8 +86,8 @@ function getArtists(query, offset=0) {
             console.log("search error");
         } else {
             if(r.status == 401) {
-                //unauthorized
-                setState(STATE_INIT);
+                console.log("unauthorized");                
+                setState(STATE_RESET);
                 return;
             }
             processSearch(r.artists.items, query, options);
@@ -107,8 +107,8 @@ function getPlaylists(query, offset=0) {
             console.log("search error");
         } else {
             if(r.status == 401) {
-                //unauthorized
-                setState(STATE_INIT);
+                console.log("unauthorized");
+                setState(STATE_RESET);
                 return;
             }
             console.log(r);
@@ -169,24 +169,32 @@ function processSearch(sArray, query, options, pics) {
     let resultLimit = resultIndex+RESULT_THRESHOLD;
     console.log("result limit: " + resultLimit);
     for(; resultIndex < resultLimit && resultIndex < resultArray.length; resultIndex++) {
-        addResult(resultArray[resultIndex].name, resultArray[resultIndex].id, options.type, resultArray[resultIndex].images[0]);    
+        let item = {
+            name: resultArray[resultIndex].name,
+            id: resultArray[resultIndex].id,
+            type: options.type,
+            pic: resultArray[resultIndex].images[0]
+        };
+        if(options.type === 'playlist')
+            item.uid = resultArray[resultIndex].owner.id;
+
+        addResult(item);    
     }
 
     $resultList.append($more);
 }
 
-function addResult(name, id, type, pic) {
+//name, id, type, pic, uid
+function addResult(item) {
 
-    let $result = $('<div/>').attr({
-        class: "butt result-button",
-        id: id
-    });
+    let $result = $('<div/>').attr({class: "butt result-button"});
+
     let size = 2;
-    if(name.length < 30) {
+    if(item.name.length < 30) {
         size = 2;
-    } else if(name.length < 50) {
+    } else if(item.name.length < 50) {
         size = 1.5;
-    } else if(name.length < 70) {
+    } else if(item.name.length < 70) {
         size = 1;
     } else {
         size = 0.75;
@@ -195,21 +203,26 @@ function addResult(name, id, type, pic) {
         "font-size": "" + size + "vw",
         "padding-left": 10
     });
-    $resultName.text(name);
-    
+    $resultName.text(item.name);
+
+    let ref = config.redirect + "?id=" + item.id + "&type=" + item.type;
+    if(item.type === 'playlist') {
+       ref += "&uid=" + item.uid;
+    }
+
     $result.on('click', function(event) {
-        window.location.href = config.redirect + "?id=" + id + "&type=" + type;
+        window.location.href = ref;
     });
     
-    if(pic != null) {
+    if(item.pic != null) {
         let $resultPic = $("<img>").attr({
-            src: pic.url,
+            src: item.pic.url,
             "margin-left": 10
         });
         $resultName.prepend($resultPic);
     }
     
     $result.append($resultName);
-    $("#" + type + "-buttons").append($result);
+    $("#" + item.type + "-buttons").append($result);
 
 }

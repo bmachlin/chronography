@@ -7,10 +7,10 @@
 
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="lib/bower_components/chartist/dist/chartist.min.js"></script>
         <script src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
         <script src="lib/underscore-min.js"></script>
-        
+        <script src="lib/bower_components/chartist/dist/chartist.min.js"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
 
         <!-- CSS -->
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
@@ -42,6 +42,7 @@
                 </div>
 
                 <div id="search-results" class="container">
+                    <h5>Only albums work currently.</h5>
                     <div id="result-buttons" class="row">
                         <div id='album-buttons' class="col-sm">Albums</div>
                         <div id='artist-buttons' class="col-sm">Artists</div>
@@ -62,6 +63,7 @@
                             <option value="energy">Energy</option>
                             <option value="key">Key</option>
                             <option value="loudness">Loudness</option>
+                            <option value="duration">Duration (mins)</option>
                             <!-- <option value="mode">Mode</option> -->
                             <option value="speechiness">Speechiness</option>
                             <option value="instrumentalness">Instrumentallness</option>
@@ -79,6 +81,7 @@
                             <option value="energy">Energy</option>
                             <option value="key">Key</option>
                             <option value="loudness">Loudness</option>
+                            <option value="duration">Duration (mins)</option>
                             <!-- <option value="mode">Mode</option> -->
                             <option value="speechiness">Speechiness</option>
                             <option value="instrumentalness">Instrumentallness</option>
@@ -100,7 +103,7 @@
           </div>
         <script src="lib/sc.js"></script>
         <script src="config.js"></script>
-        <script src="avgs-processing.js"></script>
+        <script src="avgs-processing-chartist.js"></script>
         <script src="avgs-search-results.js"></script>
         <script src="avgs.js"></script>
     </body>

@@ -12,6 +12,7 @@ const STATE_INIT = 0;
 const STATE_AUTH = 1;
 const STATE_SEARCH = 2;
 const STATE_SELECT = 3;
+const STATE_RESET = 3;
 
 /* 
     STATE KEY
@@ -19,6 +20,7 @@ const STATE_SELECT = 3;
     1 = AUTH
     2 = SEARCH RESULTS
     3 = ITEM SELECTED
+    4 = AUTH ERROR, RESET
 */
 
 
@@ -66,24 +68,21 @@ function setState(s) {
             authorizeUserImplicit(client, redirect, ['playlist-read-private']);
         });
     }
-
-    if(s == STATE_AUTH) {
+    else if(s == STATE_AUTH) {
         $("#data-results").hide();
         $("#search-results").hide();
         $("#buttons").show();
         $("#description").show();
         $("#authorize-button").hide();
     }
-
-    if(s == STATE_SEARCH) {
+    else if(s == STATE_SEARCH) {
         $("#data-results").hide();
         $("#search-results").show();
         $("#buttons").show();
         $("#description").hide();
         $("#authorize-button").hide();
     }
-
-    if(s == STATE_SELECT) {
+    else if(s == STATE_SELECT) {
         $("#data-results").show();
         $("#buttons").show();
         $("#result-buttons").empty();
@@ -91,16 +90,19 @@ function setState(s) {
         $("#description").hide();
         $("#authorize-button").hide();
 
-        $embed = $("<iframe>").attr({
-            display: "block",
-            "margin-bottom": 0,
-            width: "30%",
-            frameborder: 0,
-            allowtransparency: true,
-            src: "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
-        });
+        // $embed = $("<iframe>").attr({
+        //     display: "block",
+        //     "margin-bottom": 0,
+        //     width: "30%",
+        //     frameborder: 0,
+        //     allowtransparency: true,
+        //     src: "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
+        // });
         
-        $embed.insertAfter("#result-chart2");
+        // $embed.insertAfter("#result-chart2");
+    }
+    else if(s == STATE_RESET) {
+        setState(STATE_INIT);
     }
 }
 
@@ -108,8 +110,7 @@ $(document).ready(function() {
     args = parseArgs();
 
     if('access_token' in args) {
-        access_token = args['access_token'];
-        setAccessToken(access_token);
+        setAccessToken(args['access_token']);
         setExpireTime(args['expires_in']*1000);
         setState(STATE_AUTH);
     } else {
@@ -121,10 +122,11 @@ $(document).ready(function() {
 
     if('id' in args) {
         setState(STATE_SELECT);
-        if(!isAccessExpired())
+        if(!isAccessExpired()) {
             generateAverages(args['id'], args['type'], getAccessToken());
-        else
+        } else {
             setState(STATE_INIT);
+        }
         return;
     }
 
