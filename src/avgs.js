@@ -90,16 +90,16 @@ function setState(s) {
         $("#description").hide();
         $("#authorize-button").hide();
 
-        // $embed = $("<iframe>").attr({
-        //     display: "block",
-        //     "margin-bottom": 0,
-        //     width: "30%",
-        //     frameborder: 0,
-        //     allowtransparency: true,
-        //     src: "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
-        // });
+        $embed = $("<iframe>").attr({
+            display: "block",
+            "margin-bottom": 0,
+            width: "30%",
+            frameborder: 0,
+            allowtransparency: true,
+            src: "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
+        });
         
-        // $embed.insertAfter("#result-chart2");
+        $embed.insertAfter("#result-chart2");
     }
     else if(s == STATE_RESET) {
         setState(STATE_INIT);
