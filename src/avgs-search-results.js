@@ -214,13 +214,16 @@ function addResult(item) {
         window.location.href = ref;
     });
     
-    if(item.pic != null) {
-        let $resultPic = $("<img>").attr({
-            src: item.pic.url,
-            "margin-left": 10
-        });
-        $resultName.prepend($resultPic);
+    if(item.pic == null) {
+        item.pic = {};
+        item.pic.url = "../res/no-album-art.png";
     }
+    
+    let $resultPic = $("<img>").attr({
+        src: item.pic.url,
+        "margin-left": 10
+    });
+    $resultName.prepend($resultPic);
     
     $result.append($resultName);
     $("#" + item.type + "-buttons").append($result);
