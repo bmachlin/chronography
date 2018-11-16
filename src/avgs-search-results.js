@@ -199,9 +199,8 @@ function addResult(item) {
     } else {
         size = 0.75;
     }
-    $resultName = $("<p>").attr({
-        "font-size": "" + size + "vw",
-        "padding-left": 10
+    $resultName = $("<div>").attr({
+        "font-size": "" + size + "vw"
     });
     $resultName.text(item.name);
 
@@ -220,11 +219,10 @@ function addResult(item) {
     }
     
     let $resultPic = $("<img>").attr({
-        src: item.pic.url,
-        "margin-left": 10
+        src: item.pic.url
     });
-    $resultName.prepend($resultPic);
-    
+
+    $result.append($resultPic);
     $result.append($resultName);
     $("#" + item.type + "-buttons").append($result);
 

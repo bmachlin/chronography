@@ -4,4 +4,4 @@ let config = {
     redirect: "https://chronography.herokuapp.com"
     // redirect: "http://localhost:5000/"
 }
-// will move this somewhere safe soon!
+// todo: move
