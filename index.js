@@ -7,6 +7,9 @@ app.use(express.static(__dirname + '/src'));
 app.use('/lib', express.static(__dirname + '/lib'));
 app.use('/res', express.static(__dirname + '/res'));
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/src/index.html');
+});
 
 
 app.listen(app.get('port'), function() {
