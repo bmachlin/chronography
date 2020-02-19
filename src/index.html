@@ -6,110 +6,71 @@
         <title>Chronography</title>
 
         <!-- JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-        <script src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-        <script src="lib/underscore-min.js"></script>
-        <script src="lib/chartist/dist/chartist.min.js"></script>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="lib/bantam-2.1.min.js"></script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         <!-- CSS -->
-        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
-        <link rel="stylesheet" href="lib/chartist/dist/chartist.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Overpass+Mono&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="avgs.css" media="screen" title="no title" charset="utf-8">
+        
 
     </head>
 
     <body>
+        <div class="page-container">
+            <main>
 
-        <div id="main">
+                <div id ="intro"></div>
 
-                <div id ="intro">
-
-                    <h1><a href="/">CHRONOGRAPHY</a></h1>
-                        <p class="lead" id="description">This tool allows you to view the change in musical attributes over time of a collection of tracks.</p>
-
-                    <div id="buttons">
-
-                        <div class='input-group' id="input">
-                            <form id="search">
-                                <input type="text" name="q" autocomplete="off" spellcheck="false" id="search-query">
-                                <div id="search-button" onclick="formSearch();">Search</div>
-                            </form>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div id="search-results" class="container">
+                <div id="search-results">
                     <h5>Only albums work currently.</h5>
-                    <div id="result-buttons" class="row">
-                        <div id='album-buttons' class="col-sm">Albums</div>
-                        <div id='artist-buttons' class="col-sm">Artists</div>
-                        <div id='playlist-buttons' class="col-sm">Playlists</div>
+                    <div id="result-buttons">
+                        <div class='search-column' id='album-buttons'>Albums</div>
+                        <div class='search-column' id='artist-buttons'>Artists</div>
+                        <div class='search-column' id='playlist-buttons'>Playlists</div>
                     </div>
 
                 </div>
 
                 <div id="data-results">
-
                     <h2 id="result-name"></h2>
-
-                    <div id="selectors">
-                        <select id="feature-selector" onchange="updateChart();" style="color: #5F5FFF">
-                            <option value="none">--select attribute--</option>
-                            <option value="popularity">Popularity</option>
-                            <option value="danceability">Danceability</option>
-                            <option value="energy">Energy</option>
-                            <option value="key">Key</option>
-                            <option value="loudness">Loudness</option>
-                            <option value="duration">Duration (mins)</option>
-                            <!-- <option value="mode">Mode</option> -->
-                            <option value="speechiness">Speechiness</option>
-                            <option value="instrumentalness">Instrumentallness</option>
-                            <option value="acousticness">Acousticness</option>
-                            <option value="liveness">Liveness</option>
-                            <option value="valence">Valence</option>
-                            <option value="tempo">Tempo</option>
-                            <option value="time_signature">Time Signature</option>
-                        </select>
-
-                        <select id="feature-selector-2" onchange="updateChart();" style="color:#5EC75E">
-                            <option value="none">--select attribute--</option>
-                            <option value="popularity">Popularity</option>
-                            <option value="danceability">Danceability</option>
-                            <option value="energy">Energy</option>
-                            <option value="key">Key</option>
-                            <option value="loudness">Loudness</option>
-                            <option value="duration">Duration (mins)</option>
-                            <!-- <option value="mode">Mode</option> -->
-                            <option value="speechiness">Speechiness</option>
-                            <option value="instrumentalness">Instrumentallness</option>
-                            <option value="acousticness">Acousticness</option>
-                            <option value="liveness">Liveness</option>
-                            <option value="valence">Valence</option>
-                            <option value="tempo">Tempo</option>
-                            <option value="time_signature">Time Signature</option>
-                        </select>
-                    </div>
-
-                    <div class="ct-chart ct-golden-section result-chart" id="result-chart"></div>
-                    <div class="ct-chart ct-golden-section result-chart" id="result-chart2"></div>
-
+                    <div id="result-chart"></div>
                 </div>
 
-                <div id="authorize-button"> Authorize with Spotify</div>
+                <button id="authorize-button">Authorize</button>
+            </main>    
+            <footer>Created by <a href="https://benmachlin.com" target="_blank">Ben</a>. Powered by <a href="https://spotify.com" target="_blank">Spotify</a>.</footer>
+        
+        </div>
 
-          </div>
-
-        <footer>
-            <p>Created by <a href="https://benmachlin.com" target="_blank">Ben</a>. Powered by <a href="https://spotify.com" target="_blank">Spotify</a></p>
-        </footer>
         <script src="lib/sc.js"></script>
         <script src="config.js"></script>
-        <script src="avgs-processing-chartist.js"></script>
+        <script src="avgs-processing.js"></script>
         <script src="avgs-search-results.js"></script>
         <script src="avgs.js"></script>
+        <script>
+            let chartData;
+            (function() {
+                let googleLoad = google.charts.load('current', {packages: ['corechart']})
+                    .then((data) => {
+                        chartData = new google.visualization.DataTable();
+                        chartData.addColumn('string', 'name');
+                        labels.forEach((label) => chartData.addColumn('number', label));
+                    });
+                $bt.ajax("header.html", {
+                    method: "GET",
+                    headers: { 'Content-Type': 'html' },
+                    success: (res) => {
+                        document.getElementById("intro").innerHTML = res;
+                        args = parseArgs();
+                        processArgs();
+                    },
+                    failure: (res) => {
+                        console.log("ajax header request failed");
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>

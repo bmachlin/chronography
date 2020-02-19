@@ -4,7 +4,6 @@ let args = {};
 let results = [];
 let redirect = config.redirect;
 let client = config.client;
-let secret = config.secret;
 let username = "";
 let type = "";
 let state = 0;
@@ -12,9 +11,9 @@ const STATE_INIT = 0;
 const STATE_AUTH = 1;
 const STATE_SEARCH = 2;
 const STATE_SELECT = 3;
-const STATE_RESET = 3;
+const STATE_RESET = 4;
 
-/* 
+/*
     STATE KEY
     0 = NO AUTH
     1 = AUTH
@@ -28,11 +27,11 @@ function parseArgs() {
     let hash = location.hash.replace(/#/g, '');
     let ps = location.search.replace("?", "");
 
-    // get spotify tokens and search parameters    
+    // get spotify tokens and search parameters
     let params = ps.split('&');
     let tokens = hash.split('&');
 
-    _.each(params, function(keyvalue) {
+    $bt.map(params, function(keyvalue) {
         let kv = keyvalue.split('=');
         let key = kv[0];
         let val = kv[1];
@@ -40,75 +39,19 @@ function parseArgs() {
         console.log(key, val);
     });
 
-    _.each(tokens, function(keyvalue) {
+    $bt.map(tokens, function(keyvalue) {
         let kv = keyvalue.split('=');
         let key = kv[0];
         let val = kv[1];
         if(val != '') args[key] = val;
         console.log(key, val);
     });
+    console.log(args);
 
     return args;
 }
 
-function formSearch() {
-    window.location.href = config.redirect + "?q=" + $("#search-query").val();
-}
-
-function setState(s) {
-    console.log("setting state to " + s);
-
-    if(s == STATE_INIT) {
-        $("#data-results").hide();
-        $("#search-results").hide();
-        $("#buttons").hide();
-        $("#description").show();
-        $("#authorize-button").show();
-        $("#authorize-button").on('click', function(event) {
-            authorizeUserImplicit(client, redirect, ['playlist-read-private']);
-        });
-    }
-    else if(s == STATE_AUTH) {
-        $("#data-results").hide();
-        $("#search-results").hide();
-        $("#buttons").show();
-        $("#description").show();
-        $("#authorize-button").hide();
-    }
-    else if(s == STATE_SEARCH) {
-        $("#data-results").hide();
-        $("#search-results").show();
-        $("#buttons").show();
-        $("#description").hide();
-        $("#authorize-button").hide();
-    }
-    else if(s == STATE_SELECT) {
-        $("#data-results").show();
-        $("#buttons").show();
-        $("#result-buttons").empty();
-        $("#search-results").hide();
-        $("#description").hide();
-        $("#authorize-button").hide();
-
-        $embed = $("<iframe>").attr({
-            display: "block",
-            "margin-bottom": 0,
-            width: "30%",
-            frameborder: 0,
-            allowtransparency: true,
-            src: "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
-        });
-        
-        $embed.insertAfter("#result-chart2");
-    }
-    else if(s == STATE_RESET) {
-        setState(STATE_INIT);
-    }
-}
-
-$(document).ready(function() {
-    args = parseArgs();
-
+function processArgs() {
     if('access_token' in args) {
         setAccessToken(args['access_token']);
         setExpireTime(args['expires_in']*1000);
@@ -134,8 +77,69 @@ $(document).ready(function() {
         setState(STATE_SEARCH);
         if(!isAccessExpired()) {
             search(args['q']);
-            $("#search-query").val(args['q']);
+            $bt.get("#search-query").value = args['q'];
         } else
             setState(STATE_INIT);
     }
-});
+}
+
+function formSearch() {
+    if (state === STATE_INIT)
+      authorizeUserImplicit(client, redirect, ['playlist-read-private']);
+    else
+      window.location.href = config.redirect + "?q=" + $bt.get("#search-query").value;
+}
+
+function setState(s) {
+    console.log("setting state to " + s);
+    switch(s) {
+        case STATE_INIT:
+            $bt.get("#data-results").hidden = true;
+            $bt.get("#search-results").hidden = true;
+            $bt.get("#search-bar").hidden = true;
+            $bt.get("#description").hidden = false;
+            $bt.get("#authorize-button").hidden = false;
+            $bt.get("#authorize-button").onclick = (event) => authorizeUserImplicit(client, redirect, ['playlist-read-private']);
+            break;
+
+        case STATE_AUTH:
+            $bt.get("#data-results").hidden = true;
+            $bt.get("#search-results").hidden = true;
+            $bt.get("#search-bar").hidden = false;
+            $bt.get("#description").hidden = false;
+            $bt.get("#authorize-button").style.display = "none";
+            break;
+
+        case STATE_SEARCH:
+            $bt.get("#data-results").hidden = true;
+            $bt.get("#search-results").hidden = false;
+            $bt.get("#search-bar").hidden = false;
+            $bt.get("#description").hidden = true;
+            $bt.get("#authorize-button").style.display = "none";
+            break;
+
+        case STATE_SELECT:
+            $bt.get("#data-results").hidden = false;
+            $bt.get("#search-bar").hidden = false;
+            $bt.get("#result-buttons").innerHTML = "";
+            $bt.get("#search-results").hidden = true;
+            $bt.get("#description").hidden = true;
+            $bt.get("#authorize-button").style.display = "none";
+
+            // var $player = document.createElement("iframe");
+            // $player.setAttribute('style', {
+            //     "display": "block",
+            //     "margin-bottom": 0,
+            //     "width": "30%",
+            //     "frameborder": 0,
+            //     "allowtransparency": true,
+            //     "src": "https://open.spotify.com/embed/" + args['type'] + "/" + args['id']
+            // });
+            // $bt.get("#data-results").appendChild($player);
+            break;
+
+        case STATE_RESET:
+            setState(STATE_INIT);
+            break;
+    }
+}

@@ -12,7 +12,7 @@ function search(query) {
 }
 
 function getUserPlaylists(limit, offset) {
-    return fetchCurrentUserPlaylists(function(r) {
+    return getCurrentUserPlaylists(function(r) {
         getUserPlaylistsNext(r);
     });
 }
@@ -125,14 +125,15 @@ function getPlaylists(query, offset=0) {
 }
 
 function processSearch(sArray, query, options, pics) {
-    console.log("processSearch");
+    console.log("processSearch", options.type) 
     
-    let $more = $('<div/>').attr({
-        class: "butt result-button",
-        id: "moreBtn" + loadedMoreCount++
-    });
-    $more.text("Load more...");
-    $resultList = $("#" + options.type + "-buttons");
+    let $more = document.createElement('button');
+    $more.className = 'result-button';
+    let mid = 'moreBtn' + loadedMoreCount++
+    $more.id = mid;
+    $more.innerHTML = "Load more...";
+    $more.style.background = "none";
+    let $resultList = document.getElementById(options.type + "-buttons");
 
     if(options.type === 'album') {
         for(let i = 0; i < sArray.length; i++) {
@@ -140,30 +141,30 @@ function processSearch(sArray, query, options, pics) {
             resultArray[resultArray.length] = sArray[i];
             console.log(resultArray[resultArray.length-1].name);
         }
-        $more.on('click', function(event) {
+        $more.onclick = (event) => {
             // $resultList.append("Page " + (loadedMoreCount+1));           
-            document.getElementById(this.id).remove();
+            document.getElementById(mid).remove();
             getAlbums(query, options.offset+queryLimit);
-        });
+        };
     } else if(options.type === 'artist') {
         for(let i = 0; i < sArray.length; i++) {
             resultArray[resultArray.length] = sArray[i];
         }
-        $more.on('click', function(event) {
+        $more.onclick = (event) => {
             // $resultList.append("Page " + (loadedMoreCount+1));
-            document.getElementById(this.id).remove();      
+            document.getElementById(mid).remove();      
             getArtists(query, options.offset+queryLimit);
-        });
+        };
     } else if(options.type === 'playlist') {
         for(let i = 0; i < sArray.length; i++) {
             sArray[i].name = sArray[i].displayName;
             resultArray[resultArray.length] = sArray[i];
         }
-        $more.on('click', function(event) {
+        $more.onclick = (event) => {
             // $resultList.append("Page " + (loadedMoreCount+1));
-            document.getElementById(this.id).remove();      
+            document.getElementById(mid).remove();      
             getPlaylists(query, options.offset+queryLimit);
-        }); 
+        };
     }
 
     let resultLimit = resultIndex+RESULT_THRESHOLD;
@@ -175,55 +176,53 @@ function processSearch(sArray, query, options, pics) {
             type: options.type,
             pic: resultArray[resultIndex].images[0]
         };
-        if(options.type === 'playlist')
+        if(options.type === 'playlist') {
             item.uid = resultArray[resultIndex].owner.id;
+        }
 
         addResult(item);    
     }
 
-    $resultList.append($more);
+    $resultList.appendChild($more);
 }
 
 //name, id, type, pic, uid
 function addResult(item) {
+    let $result = document.createElement('div');
+    $result.className = 'result-button';
 
-    let $result = $('<div/>').attr({class: "butt result-button"});
-
-    let size = 2;
-    if(item.name.length < 30) {
-        size = 2;
-    } else if(item.name.length < 50) {
-        size = 1.5;
-    } else if(item.name.length < 70) {
-        size = 1;
-    } else {
-        size = 0.75;
-    }
-    $resultName = $("<div>").attr({
-        "font-size": "" + size + "vw"
-    });
-    $resultName.text(item.name);
+    // let size = 2;
+    // if(item.name.length < 30) {
+    //     size = 2;
+    // } else if(item.name.length < 50) {
+    //     size = 1.5;
+    // } else if(item.name.length < 70) {
+    //     size = 1;
+    // } else {
+    //     size = 0.75;
+    // }
+    // $resultName.style = "font-size: " + size + "vw";
+    
 
     let ref = config.redirect + "?id=" + item.id + "&type=" + item.type;
     if(item.type === 'playlist') {
        ref += "&uid=" + item.uid;
     }
 
-    $result.on('click', function(event) {
+    $result.onclick = (event) => {
         window.location.href = ref;
-    });
+    };
     
     if(item.pic == null) {
         item.pic = {};
         item.pic.url = "../res/no-album-art.png";
     }
     
-    let $resultPic = $("<img>").attr({
-        src: item.pic.url
-    });
+    let $resultPic = document.createElement('img');
+    $resultPic.src = item.pic.url;
 
-    $result.append($resultPic);
-    $result.append($resultName);
-    $("#" + item.type + "-buttons").append($result);
+    $result.appendChild($resultPic);
+    $result.innerHTML += item.name;
+    $bt.get("#" + item.type + "-buttons").appendChild($result);
 
 }
