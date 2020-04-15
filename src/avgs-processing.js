@@ -36,13 +36,12 @@ function processArtist(id, offset=0) {
 	console.log("processArtist", id);
 	// setupDataObjects();
 
-	getArtistAlbums(id, {limit: 50, "offset": offset, include_groups: ['album']}, true, function(data) {
+	getArtistAlbums(id, {include_groups: ['album']}, true, function(data) {
 		if(data) {
-			console.log(data);
 			$bt.get('#result-name').innerHTML = data.items[0].artists[0].name;
-			let numAlbums = artistAlbums.length;
-			artistAlbums.forEach((albumId) => {
-				processAlbum(albumId, false, () => {
+			let numAlbums = data.items.length;
+			data.items.forEach((album) => {
+				processAlbum(album.id, false, () => {
 					//done...?
 					numAlbums--;
 					if(numAlbums == 0) {
@@ -62,7 +61,6 @@ function processAlbum(id, isSelection, callback) {
 
 	getAlbum(id, {}, function(data) {
 		if(data) {
-			console.log(data);
 			if(isSelection)
 				$bt.get('#result-name').innerHTML = data.name + "<br>" + data.artists[0].name;			
 
@@ -97,7 +95,6 @@ function processPlaylist(id) {
 	});
 
 	getPlaylistTracks(id, {}, true, (data) => {
-		console.log(data);
 		musicData[id] = [];
 		data.items.forEach((playlistTrack) => musicData[id].push({id: playlistTrack.track.id}));
 		addFeatures(createChart);
@@ -108,7 +105,6 @@ function addFeatures(callback) {
 	let numAlbums = Object.keys(musicData).length;
 	Object.keys(musicData).forEach((albumId) => {
 		numAlbums--;
-		console.log(numAlbums);
 		if(albumId in processedIds)
 			return;
 		else
@@ -116,7 +112,6 @@ function addFeatures(callback) {
 
 		let numTracks = musicData[albumId].length;
 		musicData[albumId].forEach((track) => {
-			console.log(numTracks);
 			getTrack(track.id, {}, (data) => {
 				track.name = removeFeat(data.name);
 				track.duration = data.duration_ms / 60000;
@@ -151,16 +146,32 @@ function addFeatures(callback) {
 
 function createChart() {
 	if(processedIds.length > 1) {
-		Object.keys(musicData).forEach((id) => {
-			//
+		// todo: handle multiple sets of data (for artists)
+		Object.keys(musicData).forEach((id, i) => {
+			musicData[processedIds[Object.keys(musicData).length-i-1]].forEach((track) => {
+				let row = [track.name];
+				labels.forEach((label) => row.push(track[label]));
+				chartData.addRow(row);
+			});
 		});
 	} else {
 		let data = musicData[processedIds[0]];
-		data.forEach((track) => {
-			let row = [track.name];
-			labels.forEach((label) => row.push(track[label]));
-			chartData.addRow(row);
-		});
+		if(data.length <= 50) {
+			data.forEach((track) => {
+				let row = [track.name];
+				labels.forEach((label) => row.push(track[label]));
+				chartData.addRow(row);
+			});
+		} else {
+			let multiple = Math.floor(data.length/50);
+			data.forEach((track, i) => {
+				if(i%multiple == 0) {
+					let row = [track.name];
+					labels.forEach((label) => row.push(track[label]));
+					chartData.addRow(row);
+				}
+			});
+		}
 	}
 	drawChart();
 }
@@ -173,7 +184,16 @@ function drawChart() {
 	if(!chart) {
 		chart = new google.visualization.LineChart($bt.get("#result-chart"));
 	}
+	let series = {};
+	labels.forEach((label, i) => {
+		series[i] = {
+			lineWidth: 3,
+			viewInLegend: true
+		};
+	});
+
 	let options = {
+		series: series,
 		width: 0.9 * Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
 		height: 0.6 * Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
 		backgroundColor: '#222222',
@@ -201,4 +221,14 @@ function drawChart() {
 		}
 	}
 	chart.draw(chartData, options);
+
+	// add listener to show/hide series when clicked on the legend
+	google.visualization.events.addListener(chart, 'select', function () {
+		var sel = chart.getSelection();
+		if (sel.length > 0 && sel[0].row == null) {
+			var col = sel[0]['column']-1;
+			series[col].lineWidth = series[col].lineWidth <=0 ? 3 : 0;
+			chart.draw(chartView, options);
+		}
+	});
 }

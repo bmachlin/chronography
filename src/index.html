@@ -24,7 +24,7 @@
                 <div id ="intro"></div>
 
                 <div id="search-results">
-                    <h5>Only albums work currently.</h5>
+                    <h5>Large selections (e.g. long playlists, artists with more than a few albums) will take a while and may bug out.</h5>
                     <div id="result-buttons">
                         <div class='search-column' id='album-buttons'>Albums</div>
                         <div class='search-column' id='artist-buttons'>Artists</div>
@@ -35,6 +35,7 @@
 
                 <div id="data-results">
                     <h2 id="result-name"></h2>
+                    <h5>Click the legend to show & hide series.</h5>
                     <div id="result-chart"></div>
                 </div>
 
@@ -50,13 +51,15 @@
         <script src="avgs-search-results.js"></script>
         <script src="avgs.js"></script>
         <script>
-            let chartData;
+            let chartData, chartView;
             (function() {
                 let googleLoad = google.charts.load('current', {packages: ['corechart']})
                     .then((data) => {
                         chartData = new google.visualization.DataTable();
-                        chartData.addColumn('string', 'name');
-                        labels.forEach((label) => chartData.addColumn('number', label));
+                        chartData.addColumn('string', 'name', 'name');
+                        // labels is loaded in avgs-processing.js (not clean, I know)
+                        labels.forEach((label) => chartData.addColumn('number', label, label));
+                        chartView = new google.visualization.DataView(chartData);
                     });
                 $bt.ajax("header.html", {
                     method: "GET",
